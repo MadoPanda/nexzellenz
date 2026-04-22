@@ -4,10 +4,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useTheme }    from "@/components/ui/ThemeProvider";
 
 export function Navbar() {
+  const pathname = usePathname();
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
   const { theme } = useTheme();
@@ -36,6 +38,9 @@ export function Navbar() {
     ? (scrolled ? "rgba(6,8,16,0.97)"      : "rgba(6,8,16,0.85)")
     : (scrolled ? "rgba(240,244,255,0.97)" : "rgba(240,244,255,0.85)");
   const mobileBg = isDark ? "#0b0f1a" : "#e4eaf8";
+
+  // Early return MUST be after all hooks
+  if (pathname.startsWith('/admin')) return null;
 
   return (
     <nav

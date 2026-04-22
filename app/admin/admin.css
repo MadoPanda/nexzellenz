@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+.admin-portal {
+  --admin-bg: var(--bg, #060810);
+  --admin-accent: var(--accent, #00e5ff);
+  --admin-text: var(--text, #e8eaf0);
+  --admin-text-muted: var(--text-muted, #7a8099);
+  --admin-border: var(--border, rgba(0,229,255,0.15));
+  --admin-radius: 0.75rem;
+  
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  user-select: text !important; /* Ensure text selection works */
+}
+
+.admin-portal h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 2px;
+}
+
+.admin-portal label, .admin-portal button, .admin-portal input {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.glass-card {
+  background: rgba(11, 15, 26, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 50px rgba(0, 229, 255, 0.1);
+}
+
+.btn-primary {
+  background: transparent;
+  color: var(--admin-accent);
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--admin-radius);
+  border: 1px solid var(--admin-accent);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  background: var(--admin-accent);
+  color: var(--admin-bg);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+}
+
+.glass-input {
+  background: rgba(0, 229, 255, 0.03);
+  border: 1px solid var(--admin-border);
+  padding: 0.85rem 1rem;
+  border-radius: var(--admin-radius);
+  color: var(--admin-text);
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.glass-input:focus {
+  border-color: var(--admin-accent);
+  background: rgba(0, 229, 255, 0.06);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+}
+
+.glass-input::placeholder {
+  color: var(--admin-text-muted);
+  opacity: 0.5;
+}
+
+/* Component Styles */
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.status-badge.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+.status-badge.quoted { background: rgba(0, 229, 255, 0.1); color: var(--accent); border: 1px solid rgba(0, 229, 255, 0.2); }
+.status-badge.in-review { background: rgba(124, 58, 237, 0.1); color: #8b5cf6; border: 1px solid rgba(124, 58, 237, 0.2); }
+.status-badge.approved { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+.status-badge.completed { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+.status-badge.rejected { background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.nav-item:hover {
+  color: var(--accent);
+  background: rgba(0, 229, 255, 0.05);
+}
+.nav-item.active {
+  color: var(--bg);
+  background: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+}
+
+/* Fix for selection issues */
+.admin-portal input, .admin-portal textarea {
+  user-select: text !important;
+  cursor: text;
+}

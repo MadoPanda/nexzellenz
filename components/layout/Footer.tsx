@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const CONTACT = {
   phone:   "+91 XXXXX XXXXX",
@@ -13,7 +14,11 @@ const SOCIALS = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
+
+  if (pathname.startsWith('/admin')) return null;
+
   return (
     <footer className="relative z-10" style={{ borderTop:"1px solid var(--border)" }}>
       <div className="container-x py-10 sm:py-14">
