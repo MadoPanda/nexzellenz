@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { supabase } from '../supabase';
 
 export type QuoteStatus = 'Pending' | 'In Review' | 'Quoted' | 'Approved' | 'Completed' | 'Rejected';
 
@@ -33,93 +34,77 @@ export interface AdminAlert {
     targetId?: string;
 }
 
-const INITIAL_QUOTES: Quote[] = [
-    { id: '101', customer: 'Aero Dynamics', project: 'NACA 0012 Test Wing', material: 'Industrial Nylon', quantity: 2, status: 'Pending', date: '2026-04-22' },
-    { id: '102', customer: 'MedTech Hub', project: 'Bone Scaffold v4', material: 'High-Toughness Resin', quantity: 15, status: 'Quoted', date: '2026-04-21' },
-    { id: '103', customer: 'AutoDesign Co', project: 'Gear Housing', material: 'PETG', quantity: 5, status: 'In Review', date: '2026-04-20' },
-];
-
-const INITIAL_STOCK: StockItem[] = [
-    { id: '1', name: 'High-Toughness Resin', type: 'SLA', stock: 1.2, unit: 'kg', min: 2.0, price: 12500 },
-    { id: '2', name: 'Industrial Nylon', type: 'FDM', stock: 8.5, unit: 'kg', min: 5.0, price: 4500 },
-    { id: '3', name: 'PETG (Industrial)', type: 'FDM', stock: 12.0, unit: 'kg', min: 5.0, price: 3200 },
-];
-
 export const useAdminData = () => {
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [stock, setStock] = useState<StockItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const loadData = () => {
-        const savedQuotes = localStorage.getItem('nex_admin_quotes');
-        const savedStock = localStorage.getItem('nex_admin_stock');
+    const fetchData = async () => {
+        setIsLoading(true);
+        const { data: quoteData } = await supabase.from('quotes').select('*').order('date', { ascending: false });
+        const { data: stockData } = await supabase.from('stock').select('*').order('name');
 
-        if (savedQuotes) setQuotes(JSON.parse(savedQuotes));
-        else {
-            setQuotes(INITIAL_QUOTES);
-            localStorage.setItem('nex_admin_quotes', JSON.stringify(INITIAL_QUOTES));
-        }
-
-        if (savedStock) setStock(JSON.parse(savedStock));
-        else {
-            setStock(INITIAL_STOCK);
-            localStorage.setItem('nex_admin_stock', JSON.stringify(INITIAL_STOCK));
-        }
+        if (quoteData) setQuotes(quoteData as Quote[]);
+        if (stockData) setStock(stockData as StockItem[]);
         setIsLoading(false);
     };
 
-    // Load from localStorage on mount
     useEffect(() => {
-        loadData();
+        fetchData();
 
-        // Cross-tab Synchronization
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'nex_admin_quotes' || e.key === 'nex_admin_stock') {
-                loadData();
-            }
+        // Real-time Subscriptions
+        const quoteChannel = supabase
+            .channel('public:quotes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'quotes' }, () => {
+                fetchData();
+            })
+            .subscribe();
+
+        const stockChannel = supabase
+            .channel('public:stock')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'stock' }, () => {
+                fetchData();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(quoteChannel);
+            supabase.removeChannel(stockChannel);
         };
-
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
 
-    // Update localStorage when state changes
-    useEffect(() => {
-        if (!isLoading) {
-            localStorage.setItem('nex_admin_quotes', JSON.stringify(quotes));
-        }
-    }, [quotes, isLoading]);
-
-    useEffect(() => {
-        if (!isLoading) {
-            localStorage.setItem('nex_admin_stock', JSON.stringify(stock));
-        }
-    }, [stock, isLoading]);
-
     // Actions
-    const updateQuoteStatus = (id: string, status: QuoteStatus) => {
-        setQuotes(prev => prev.map(q => q.id === id ? { ...q, status } : q));
+    const updateQuoteStatus = async (id: string, status: QuoteStatus) => {
+        const { error } = await supabase.from('quotes').update({ status }).eq('id', id);
+        if (!error) fetchData();
     };
 
-    const addStock = (item: Omit<StockItem, 'id'>) => {
-        const newItem = { ...item, id: Math.random().toString(36).substr(2, 9) };
-        setStock(prev => [...prev, newItem]);
+    const addStock = async (item: Omit<StockItem, 'id'>) => {
+        const { error } = await supabase.from('stock').insert([item]);
+        if (!error) fetchData();
     };
 
-    const updateStock = (id: string, amount: number) => {
-        setStock(prev => prev.map(s => s.id === id ? { ...s, stock: s.stock + amount } : s));
+    const updateStock = async (id: string, amount: number) => {
+        const currentItem = stock.find(s => s.id === id);
+        if (currentItem) {
+            const { error } = await supabase.from('stock').update({ stock: currentItem.stock + amount }).eq('id', id);
+            if (!error) fetchData();
+        }
     };
 
-    const deleteStock = (id: string) => {
-        setStock(prev => prev.filter(s => s.id !== id));
+    const deleteStock = async (id: string) => {
+        const { error } = await supabase.from('stock').delete().eq('id', id);
+        if (!error) fetchData();
     };
 
-    const editStock = (id: string, updates: Partial<StockItem>) => {
-        setStock(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+    const editStock = async (id: string, updates: Partial<StockItem>) => {
+        const { error } = await supabase.from('stock').update(updates).eq('id', id);
+        if (!error) fetchData();
     };
 
     // Calculate Growth
     const calculateGrowth = () => {
+        if (quotes.length === 0) return '0%';
         const now = new Date();
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
