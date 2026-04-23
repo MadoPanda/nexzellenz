@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { useAdminData, Quote, QuoteStatus } from '@/lib/hooks/useAdminData';
 import { Search, Filter, X, Eye, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const QuotesPage = () => {
+const QuotesContent = () => {
   const { quotes, updateQuoteStatus, isLoading } = useAdminData();
   const searchParams = useSearchParams();
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
@@ -216,6 +216,14 @@ const QuotesPage = () => {
       </AnimatePresence>
 
     </div>
+  );
+};
+
+const QuotesPage = () => {
+  return (
+    <Suspense fallback={<div className="admin-portal" style={{ padding: '2rem' }}>Loading node data...</div>}>
+      <QuotesContent />
+    </Suspense>
   );
 };
 

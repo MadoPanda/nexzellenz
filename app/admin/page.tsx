@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { TrendingUp, Users, Package, Clock, ArrowUpRight, ArrowDownRight, AlertTriangle } from 'lucide-react';
-import { useAdminData } from '@/lib/hooks/useAdminData';
+import { useAdminData, AdminAlert } from '@/lib/hooks/useAdminData';
 import toast from 'react-hot-toast';
 
 const OverviewPage = () => {
@@ -20,7 +20,7 @@ const OverviewPage = () => {
     { name: 'Monthly Growth', value: stats.monthlyGrowth, change: '+2.1%', icon: <Users size={20} />, trend: 'up', path: '/admin/analytics' },
   ];
 
-  const handleAlertAction = (alert: any) => {
+  const handleAlertAction = (alert: AdminAlert) => {
     if (alert.targetId) {
       updateStock(alert.targetId, 5);
       toast.success(`${alert.message} Resolved: Stock provisioned.`);
