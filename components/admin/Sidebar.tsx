@@ -12,7 +12,6 @@ const Sidebar = () => {
     { name: 'Overview', icon: <LayoutDashboard size={20} />, href: '/admin' },
     { name: 'Analytics', icon: <BarChart3 size={20} />, href: '/admin/analytics' },
     { name: 'Stock Manager', icon: <Package size={20} />, href: '/admin/stock' },
-    { name: 'Quotes', icon: <ClipboardList size={20} />, href: '/admin/quotes' },
     { name: 'Settings', icon: <Settings size={20} />, href: '/admin/settings' },
   ];
 

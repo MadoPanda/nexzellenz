@@ -83,6 +83,7 @@ export const useAdminData = () => {
         const { error } = await supabase.from('stock').insert([item]);
         if (!error) fetchData();
     };
+    
 
     const updateStock = async (id: string, amount: number) => {
         const currentItem = stock.find(s => s.id === id);
