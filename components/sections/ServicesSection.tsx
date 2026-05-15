@@ -100,7 +100,7 @@ export function ServicesSection() {
         <ScrollReveal className="grid md:grid-cols-2 gap-8 items-end mb-14">
           <div>
             <p className="section-label">Our Services</p>
-            <h2 style={{ fontFamily:"'Bebas Neue',sans-serif",fontSize:"clamp(44px,5vw,80px)",letterSpacing:"2px",lineHeight:0.95,color:"var(--text)" }}>WHAT WE<br/>MANUFACTURE</h2>
+            <h2 className="tracking-tight" style={{ fontFamily:"'Bebas Neue',sans-serif",fontSize:"clamp(44px,5vw,80px)",letterSpacing:"1px",lineHeight:0.95,color:"var(--text)" }}>WHAT WE<br/>MANUFACTURE</h2>
           </div>
           <p style={{ fontSize:"clamp(14px,1.5vw,16px)",lineHeight:1.75,color:"var(--text-muted)" }}>From concept to creation, we provide end-to-end additive manufacturing solutions. Precision, speed, and quality on every project.</p>
         </ScrollReveal>

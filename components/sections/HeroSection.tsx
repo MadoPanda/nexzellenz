@@ -210,11 +210,11 @@ export function HeroSection() {
           </div>
         </div>
         {/* Desktop stats */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6">
+        <div className=" absolute right-0 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6">
           {STATS.map((stat) => (
             <div
               key={stat.label}
-              className="text-right pr-5"
+              className="text-right pr-5 overflow-hidden"
               style={{ borderRight: "2px solid var(--accent)" }}
             >
               <div
