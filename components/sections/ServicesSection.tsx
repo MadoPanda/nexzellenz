@@ -14,7 +14,7 @@ const SERVICES = [
     accent: "#00e5ff", glow: "rgba(0,229,255,0.55)",
   },
   {
-    id: "2", code: "SVC_02", featured: false,
+    id: "2", code: "SVC_02", featured: true,
     title: "FDM 3D Printing",
     description: "Cost-effective, durable parts in PLA, ABS, PETG, TPU, and engineering-grade nylons. Perfect for functional prototypes and end-use parts at any scale.",
     tags: ["Multi-Material", "Large Format", "Functional Parts"],
